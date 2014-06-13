@@ -1,0 +1,57 @@
+package com.example.projtest;
+
+import org.andengine.engine.Engine;
+import org.andengine.engine.camera.Camera;
+import org.andengine.opengl.vbo.VertexBufferObjectManager;
+
+// TODO: Auto-generated Javadoc
+/**
+ * The Singleton Class mainEngine.
+ */
+public class mainEngine {
+	
+	/** The Constant INSTANCE. */
+	private static final mainEngine INSTANCE = new mainEngine();
+    
+    /** The engine. */
+    public Engine engine;
+    
+    /** The activity. */
+    public MainActivity activity;
+    
+    /** The camera. */
+    public Camera camera;
+    
+    /** The vbom. */
+    public VertexBufferObjectManager vbom;
+	
+	/**
+	 * Prepare.
+	 * 
+	 * @param engine
+	 *            the engine
+	 * @param activity
+	 *            the activity
+	 * @param camera
+	 *            the camera
+	 * @param vbom
+	 *            the vbom
+	 */
+	public static void prepare(Engine engine, MainActivity activity, Camera camera, VertexBufferObjectManager vbom)
+    {		
+        getInstance().engine = engine;
+        getInstance().activity = activity;
+        getInstance().camera = camera;
+        getInstance().vbom = vbom;        
+    }
+	
+	 /**
+	 * Gets the single instance of mainEngine.
+	 * 
+	 * @return single instance of mainEngine
+	 */
+ 	public static mainEngine getInstance()
+     {
+         return INSTANCE;
+     }
+}

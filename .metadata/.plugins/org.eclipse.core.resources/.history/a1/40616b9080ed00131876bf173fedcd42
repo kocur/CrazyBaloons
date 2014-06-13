@@ -1,0 +1,26 @@
+package com.example.projtest;
+
+import org.andengine.engine.Engine;
+import org.andengine.engine.camera.Camera;
+import org.andengine.opengl.vbo.VertexBufferObjectManager;
+
+public class mainEngine {
+	private static final mainEngine INSTANCE = new mainEngine();
+    
+    public Engine engine;
+    public MainActivity activity;
+    public Camera camera;
+    public VertexBufferObjectManager vbom;
+	public static void prepare(Engine engine, MainActivity activity, Camera camera, VertexBufferObjectManager vbom)
+    {		
+        getInstance().engine = engine;
+        getInstance().activity = activity;
+        getInstance().camera = camera;
+        getInstance().vbom = vbom;        
+    }
+	
+	 public static mainEngine getInstance()
+     {
+         return INSTANCE;
+     }
+}

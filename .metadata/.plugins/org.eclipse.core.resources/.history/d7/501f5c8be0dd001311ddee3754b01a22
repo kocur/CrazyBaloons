@@ -1,0 +1,57 @@
+package com.example.projtest;
+
+import java.util.Random;
+
+import org.andengine.audio.music.Music;
+import org.andengine.engine.Engine;
+import org.andengine.entity.sprite.Sprite;
+import org.andengine.extension.physics.box2d.PhysicsWorld;
+import org.andengine.input.touch.TouchEvent;
+import org.andengine.opengl.texture.atlas.bitmap.BitmapTextureAtlas;
+import org.andengine.opengl.texture.region.ITextureRegion;
+
+import com.badlogic.gdx.physics.box2d.Body;
+
+public class Cbaloon {
+	
+	 Random generator = new Random();
+	private Sprite sprite;
+	BitmapTextureAtlas playerTexture;
+	ITextureRegion playerTexureRegion;
+	PhysicsWorld physicsWorld;
+	Engine mEngine;
+	Body body;
+	Music musicPop;
+	
+	
+	public Cbaloon(Sprite sprite, ITextureRegion playerTexureRegion, Engine mEngine) {
+		
+		this.sprite = sprite;
+		this.playerTexureRegion = playerTexureRegion;
+		this.mEngine = mEngine;
+
+		this.sprite = new Sprite(generator.nextInt(800), 240,
+				this.playerTexureRegion, this.mEngine.getVertexBufferObjectManager()){
+			@Override
+		    public boolean onAreaTouched(TouchEvent pSceneTouchEvent, float X, float Y) 
+		    {
+		        if (pSceneTouchEvent.isActionUp())
+		        {
+		            Cbaloon.this.sprite.detachSelf();
+		            MainActivity.musicPop.play();
+		        }
+		        return true;
+		    };
+		};				
+	}
+
+	public Sprite getSprite() {
+		return sprite;
+	}
+
+	public Body getBody(){
+		return this.body;
+	}
+	
+
+}

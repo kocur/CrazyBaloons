@@ -1,0 +1,48 @@
+package com.example.gamee;
+
+import org.andengine.entity.sprite.Sprite;
+import org.andengine.opengl.util.GLState;
+import org.andengine.engine.camera.Camera;
+
+import com.example.gamee.SceneManager.SceneType;
+
+public class MainMenuScene extends BaseScene {
+
+	@Override
+	public void createScene() {
+		createBackground();
+
+	}
+
+	@Override
+	public void onBackKeyPressed() {
+		System.exit(0); // mamy pewnosc ze aplikacja zosta³a skillowana
+
+	}
+
+	@Override
+	public SceneType getSceneType() {
+		// TODO Auto-generated method stub
+		return SceneType.SCENE_MENU;
+	}
+
+	@Override
+	public void disposeScene() {
+		// TODO Auto-generated method stub
+
+	}
+	
+	private void createBackground()
+	{
+	    attachChild(new Sprite(400, 240, resourcesManager.menu_background_region, vbom)
+	    {
+	        @Override
+	        protected void preDraw(GLState pGLState, Camera pCamera) 
+	        {
+	            super.preDraw(pGLState, pCamera);
+	            pGLState.enableDither();
+	        }
+	    });
+	}
+
+}

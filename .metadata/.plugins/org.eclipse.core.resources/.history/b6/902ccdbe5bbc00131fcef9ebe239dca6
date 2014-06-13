@@ -1,0 +1,75 @@
+package com.Scenes;
+
+
+
+
+
+
+
+import org.andengine.engine.camera.hud.HUD;
+import org.andengine.entity.scene.background.Background;
+import org.andengine.entity.text.Text;
+import org.andengine.entity.text.TextOptions;
+import org.andengine.util.adt.align.HorizontalAlign;
+import org.andengine.util.adt.color.Color;
+
+import com.ScenesEngine.BaseScene;
+import com.ScenesEngine.SceneManager.SceneType;
+
+public class GameScene extends BaseScene {
+
+	private HUD gameHUD;
+	private Text scoreText;
+	
+	@Override
+	public void createScene() {
+		// TODO Auto-generated method stub
+		setBackground(new Background(Color.PINK));
+
+	}
+
+	@Override
+	public void onBackKeyPressed() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public SceneType getSceneType() {
+		// TODO Auto-generated method stub
+		return SceneType.SCENE_GAME;
+	}
+
+	@Override
+	public void disposeScene() {
+		// TODO Auto-generated method stub
+
+	}
+	
+	
+
+	private void createHUD()
+	{
+	    gameHUD = new HUD();
+	    
+	 // tekst wyœwietlajacy iloœæ zdobytych punktów
+	    scoreText = new Text(20, 420, resourcesManager.catFont, "Punkty: 0123456789", new TextOptions(HorizontalAlign.LEFT), vbom);
+	    scoreText.setAnchorCenter(0, 0);    
+	    scoreText.setText("Score: 0");
+	    gameHUD.attachChild(scoreText);
+	    
+	    camera.setHUD(gameHUD);
+	}
+	
+	private int score = 0;
+	private void addToScore(int i)
+	{
+	    score += i;
+	    scoreText.setText("Punkty: " + score);
+	}
+	
+	
+
+	
+
+}

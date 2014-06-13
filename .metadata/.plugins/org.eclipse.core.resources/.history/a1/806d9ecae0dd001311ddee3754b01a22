@@ -1,0 +1,40 @@
+package com.example.projtest;
+
+import org.andengine.engine.Engine;
+import org.andengine.engine.camera.Camera;
+import org.andengine.entity.scene.background.Background;
+import org.andengine.entity.scene.menu.MenuScene;
+import org.andengine.entity.scene.menu.item.IMenuItem;
+import org.andengine.entity.scene.menu.item.SpriteMenuItem;
+import org.andengine.entity.scene.menu.item.decorator.ScaleMenuItemDecorator;
+import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.entity.scene.menu.MenuScene.IOnMenuItemClickListener;
+
+
+
+public class Menu extends MenuScene{
+
+
+	
+	public Menu(Camera camera, Engine e, ITextureRegion b) {
+		super(camera);
+		//menuScene = new MenuScene(camera);
+	    
+	    final IMenuItem optionsMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(0, b, e.getVertexBufferObjectManager()), 2, 1);
+	    final IMenuItem playMenuItem = new ScaleMenuItemDecorator(new SpriteMenuItem(1, b, e.getVertexBufferObjectManager()), 2, 1);
+	    
+	    this.addMenuItem(optionsMenuItem);
+	    this.addMenuItem(playMenuItem);
+	    
+	    this.buildAnimations();
+	   // menuScene.setBackgroundEnabled(false);
+	    this.setBackground(new Background(0, 125, 58));
+	    
+	    //menuScene.setOnMenuItemClickListener(this);
+	    
+	}
+
+
+	
+
+}

@@ -1,0 +1,203 @@
+package com.example.projtest;
+
+import java.util.Random;
+
+import org.andengine.engine.Engine;
+import org.andengine.engine.camera.Camera;
+import org.andengine.engine.camera.hud.HUD;
+import org.andengine.engine.handler.IUpdateHandler;
+import org.andengine.engine.handler.timer.ITimerCallback;
+import org.andengine.engine.handler.timer.TimerHandler;
+import org.andengine.entity.primitive.Rectangle;
+import org.andengine.entity.scene.Scene;
+import org.andengine.entity.scene.background.Background;
+import org.andengine.entity.sprite.Sprite;
+import org.andengine.entity.text.Text;
+import org.andengine.entity.util.FPSCounter;
+import org.andengine.extension.physics.box2d.PhysicsConnector;
+import org.andengine.extension.physics.box2d.PhysicsFactory;
+import org.andengine.extension.physics.box2d.PhysicsWorld;
+import org.andengine.opengl.font.Font;
+import org.andengine.opengl.texture.region.ITextureRegion;
+import org.andengine.util.adt.color.Color;
+
+import android.view.KeyEvent;
+
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+
+public class Game extends Scene{
+
+	
+	public static int numberOfBaloons = 5;
+	Random generator = new Random();
+	private PhysicsWorld physicsWorld;
+	private HUD hud;
+	private Camera mCamera;
+	private Engine mEngine;
+	private Text fpsText, pointsText, timeText, winText, win2Text;
+	PhysicsConnector[] pc = new PhysicsConnector[numberOfBaloons];
+	Sprite[] sBaloon = new Sprite[numberOfBaloons];
+	Cbaloon[] baloon = new Cbaloon[numberOfBaloons];
+	final FixtureDef[] PLAYER_FIX = new  FixtureDef[numberOfBaloons];
+	private Font font, pointsFont, winFont;
+	final FPSCounter fpsCounter = new FPSCounter();
+	private ITextureRegion playerTexureRegion;
+	private Body body;
+	private int timee = 0;
+	
+	
+	public Game(PhysicsWorld physicsWorld, HUD hud, Camera mCamera,
+			Engine mEngine,  Font font, Font font30, Font font100,
+			ITextureRegion playerTexureRegion, Body body) {
+		this.physicsWorld = physicsWorld;
+		this.hud = hud;
+		this.mCamera = mCamera;
+		this.mEngine = mEngine;
+		this.font = font;
+		this.playerTexureRegion = playerTexureRegion;
+		this.body = body;
+		this.pointsFont = font30;
+		this.winFont = font100;
+		init();
+	}
+
+	private void init()
+	{
+		Cbaloon.baloonInstances = 0;
+		this.setBackground(new Background(0, 125, 58));
+		physicsWorld = new PhysicsWorld(new Vector2(10,
+				-10), false);
+		this.registerUpdateHandler(physicsWorld);
+		hud = new HUD();
+		
+	
+			mCamera.setHUD(hud);
+			
+		
+		fpsText = new Text(MainActivity.CAMERA_WIDTH-45, MainActivity.CAMERA_HEIGHT-15, this.font, "FPS:", "FPS: XX".length(),mEngine.getVertexBufferObjectManager());
+		pointsText = new Text(120,15,this.pointsFont,"balony: ","balony: XXX".length(),mEngine.getVertexBufferObjectManager());
+		timeText = new Text(400,15,this.pointsFont,"czas: 0","czas: XXXX".length(),mEngine.getVertexBufferObjectManager());
+		winText = new Text(400,240,this.winFont,"WYGRANA","WYGRANA".length(),mEngine.getVertexBufferObjectManager());
+		win2Text = new Text(400,120,this.pointsFont,"zbiles "+numberOfBaloons+" balonow!","zbiles XX balonow!".length(),mEngine.getVertexBufferObjectManager());
+		winText.setVisible(false);
+		win2Text.setVisible(false);
+		
+		createWalls();
+		addBaloons(numberOfBaloons);
+		
+			
+		this.mEngine.registerUpdateHandler(fpsCounter);
+		hud.attachChild(fpsText);
+		hud.attachChild(pointsText);
+		hud.attachChild(timeText);
+		hud.attachChild(winText);
+		hud.attachChild(win2Text);
+		
+		
+		//gameScene.setOnSceneTouchListener(this);
+		//------------------------------------------------
+				//--------------GAME LOOP-------------------------
+				//------------------------------------------------
+				this.registerUpdateHandler(new IUpdateHandler() {                    
+		            public void reset() {        
+		            }             
+		            public void onUpdate(float pSecondsElapsed) {
+		            	//SETTING RANDOM GRAVITY
+		            	physicsWorld.setGravity(new Vector2((generator.nextInt(40)-20),
+		        				generator.nextInt(40)-20));
+		            	//DISPLAYING FPS
+		            	fpsText.setText("fps: "+(int)fpsCounter.getFPS());
+		            	//DISPLAYING POINTS
+		            	pointsText.setText("balony: "+Cbaloon.baloonInstances);
+		            	
+		            	if(Cbaloon.baloonInstances == 0){
+		            		hud.detachChild(fpsText);
+		            		hud.detachChild(pointsText);
+		            		winText.setVisible(true);
+		            		win2Text.setVisible(true);
+		            	}
+		            		
+		            	
+		            }
+		        });
+				//------------------------------------------------
+				//--------------END OF GAME LOOP------------------
+				//------------------------------------------------
+				
+			this.registerUpdateHandler(new TimerHandler(1.0f, true, new ITimerCallback() {
+				
+				@Override
+				public void onTimePassed(TimerHandler pTimerHandler) {
+					// TODO Auto-generated method stub
+					if(!winText.isVisible()){
+						timee++;
+						timeText.setText("w czasie "+timee+" sekund!");
+					}
+					
+				}
+			}));
+			
+	}
+
+	
+
+	
+	private void createWalls() {
+		// TODO Auto-generated method stub
+		FixtureDef WALL_FIX = PhysicsFactory.createFixtureDef(0.0f, 0.0f, 0.0f);
+		Rectangle ground = new Rectangle(400, MainActivity.CAMERA_HEIGHT, MainActivity.CAMERA_WIDTH,
+				1, this.mEngine.getVertexBufferObjectManager());
+		Rectangle ceil = new Rectangle(400, 0, MainActivity.CAMERA_WIDTH,
+				1, this.mEngine.getVertexBufferObjectManager());
+		Rectangle left = new Rectangle(0, 240, 1,
+				MainActivity.CAMERA_HEIGHT, this.mEngine.getVertexBufferObjectManager());
+		Rectangle right = new Rectangle(MainActivity.CAMERA_WIDTH, 240, 1,
+				MainActivity.CAMERA_HEIGHT, this.mEngine.getVertexBufferObjectManager());
+		
+		ground.setColor(new Color(15, 50, 0));
+		ceil.setColor(new Color(15, 50, 0));
+		left.setColor(new Color(15, 50, 0));
+		right.setColor(new Color(15, 50, 0));
+		
+		PhysicsFactory.createBoxBody(physicsWorld, ground, BodyType.StaticBody,
+				WALL_FIX);
+		PhysicsFactory.createBoxBody(physicsWorld, ceil, BodyType.StaticBody,
+				WALL_FIX);
+		PhysicsFactory.createBoxBody(physicsWorld, left, BodyType.StaticBody,
+				WALL_FIX);
+		PhysicsFactory.createBoxBody(physicsWorld, right, BodyType.StaticBody,
+				WALL_FIX);
+		
+		this.attachChild(ground);
+		this.attachChild(ceil);
+		this.attachChild(left);
+		this.attachChild(right);
+	}
+	
+	private void addBaloons(int numberOfBaloons){
+		for(int i = 0; i < numberOfBaloons; i++)
+		{
+			PLAYER_FIX[i] = PhysicsFactory.createFixtureDef(0.0f,
+					1.0f, 0.0f);
+							
+			baloon[i] = new Cbaloon(sBaloon[i], playerTexureRegion, mEngine);
+			sBaloon[i] = baloon[i].getSprite();
+			//sPlayer.setRotation(45.0f);	
+			body = PhysicsFactory.createCircleBody(physicsWorld, sBaloon[i],
+					BodyType.DynamicBody, PLAYER_FIX[i]);
+			this.registerTouchArea(sBaloon[i]);
+			this.attachChild(sBaloon[i]);
+			pc[i] = new PhysicsConnector(sBaloon[i],	body, true, false);
+			physicsWorld.registerPhysicsConnector(pc[i]);
+								
+	}
+	}
+	
+
+
+
+	
+}

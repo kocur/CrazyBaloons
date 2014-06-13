@@ -1,0 +1,5 @@
+INDEX VERSION 1.126+C:\Users\kocur_000\Documents\GitHub\CrazyBaloons — kopia\.metadata\.plugins\org.eclipse.jdt.core
+1284074322.index
+3782617288.index
+3162286232.index
+1355521168.index
